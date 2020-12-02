@@ -10,6 +10,11 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class ConsoleInboundHandler extends ChannelInboundHandlerAdapter {
+    private String username;
+
+    public ConsoleInboundHandler(String username) {
+        this.username = username;
+    }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
