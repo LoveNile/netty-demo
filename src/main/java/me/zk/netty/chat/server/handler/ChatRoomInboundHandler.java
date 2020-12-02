@@ -5,21 +5,22 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
+import me.zk.netty.chat.common.Constant;
 import me.zk.netty.chat.common.PubFunctions;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ChatRoomInboundHandler extends ChannelInboundHandlerAdapter {
-    private AttributeKey<String> chatRoom = AttributeKey.newInstance("chatRoom");
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel channel = ctx.channel();
-        if (channel.hasAttr(chatRoom)) {
+        if (!channel.hasAttr(Constant.loginUsers)) {
 
         } else {
-            String body = "请选择聊天室！";
+            int size = channel.attr(Constant.loginUsers).get().size();
+            String body = "在线人数：" + size;
             ByteBuf buf = PubFunctions.getBuffer(body);
             ctx.writeAndFlush(buf);
         }
