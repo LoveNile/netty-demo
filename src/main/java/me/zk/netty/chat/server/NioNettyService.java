@@ -5,6 +5,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import me.zk.netty.chat.server.handler.ChatRoomInboundHandler;
+import me.zk.netty.chat.server.handler.LoginInboundHandler;
 import me.zk.netty.chat.server.handler.NettyServerInboundHandler;
 
 public class NioNettyService {
@@ -20,6 +22,7 @@ public class NioNettyService {
         try {
             // 引导类
             ServerBootstrap serverBootstrap = new ServerBootstrap();
+
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG,100)
@@ -27,7 +30,9 @@ public class NioNettyService {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast("demo",new NettyServerInboundHandler());
+                            ch.pipeline().addLast("login", new LoginInboundHandler());
+                            ch.pipeline().addLast("dealMsg",new NettyServerInboundHandler());
+                            ch.pipeline().addLast("chatRoom", new ChatRoomInboundHandler());
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(8080).sync();
